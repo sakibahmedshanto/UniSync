@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="450.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="universitiymanagementsystem.AddBookController">
+    <children>
+        <AnchorPane fx:id="main_form" layoutX="133.0" layoutY="80.0" prefHeight="450.0" prefWidth="650.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <AnchorPane layoutX="13.0" layoutY="17.0" prefHeight="417.0" prefWidth="624.0" stylesheets="@../Design/MainForm.css">
+                    <styleClass>
+                        <String fx:value="white-bg" />
+                        <String fx:value="radius" />
+                        <String fx:value="shadow" />
+                    </styleClass>
+                    <children>
+
+                        <Label layoutX="14.0" layoutY="14.0" text="Book Information">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+
+                        <Label layoutX="50.0" layoutY="67.0" prefHeight="17.0" prefWidth="92.0" text="          Book Title:" />
+                        <TextField fx:id="book_title" layoutX="151.0" layoutY="63.0" prefHeight="25.0" prefWidth="109.0" stylesheets="@../Design/MainForm.css" />
+
+                        <Label layoutX="84.0" layoutY="108.0" text="Author:" />
+                        <TextField fx:id="book_author" layoutX="151.0" layoutY="104.0" />
+
+                        <Label layoutX="93.0" layoutY="188.0" text="category:" />
+                        <ComboBox fx:id="book_category" layoutX="153.0" layoutY="184.0" prefWidth="150.0" promptText="Choose..." />
+
+                        <Label layoutX="380.0" layoutY="299.0" text="Status:" />
+                        <ComboBox fx:id="book_status" layoutX="427.0" layoutY="295.0" prefWidth="150.0" promptText="Choose..." />
+
+                        <Button fx:id="book_addBtn" layoutX="187.0" layoutY="366.0" mnemonicParsing="false" onAction="#libraryAddBtn" prefHeight="37.0" prefWidth="100.0" styleClass="btn" stylesheets="@../Design/MainForm.css" text="Add" />
+                        <Button fx:id="book_updateBtn" layoutX="321.0" layoutY="366.0" mnemonicParsing="false" onAction="#updateBtn" prefHeight="37.0" prefWidth="100.0" styleClass="btn" stylesheets="@../Design/MainForm.css" text="Update" />
+
+                        <Label layoutX="96.0" layoutY="139.0" text="ISBN: " />
+                        <TextField fx:id="book_isbn" layoutX="153.0" layoutY="135.0" />
+
+                        <Label layoutX="102.0" layoutY="220.0" text="quantity:" />
+                        <TextField fx:id="book_quantity" layoutX="151.0" layoutY="219.0" />
+
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

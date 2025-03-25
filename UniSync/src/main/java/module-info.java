@@ -1,9 +1,9 @@
-module com.example.demo {
+module com.example.UniSync {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
 
 
-    opens com.example.demo to javafx.fxml;
-    exports com.example.demo;
+    opens com.example.UniSync to javafx.fxml;
+    exports com.example.UniSync;
 }

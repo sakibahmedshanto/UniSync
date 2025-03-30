@@ -94,6 +94,35 @@ public class AdminMainFormController implements Initializable {
     @FXML
     private AnchorPane addTeacher_form;
 
+    @FXML
+    private TableView<StudentData> addStudent_tableView;
+
+    @FXML
+    private TableColumn<StudentData, String> addStudent_col_studentNumber;
+
+    @FXML
+    private TableColumn<StudentData, String> addStudent_col_name;
+
+    @FXML
+    private TableColumn<StudentData, String> addStudent_col_year;
+
+    @FXML
+    private TableColumn<StudentData, String> addStudent_col_course;
+
+    @FXML
+    private TableColumn<StudentData, String> addStudent_col_section;
+
+    @FXML
+    private TableColumn<StudentData, String> addStudent_col_pay;
+
+    @FXML
+    private TableColumn<StudentData, String> addStudent_col_statusPayment;
+
+    @FXML
+    private TableColumn<StudentData, String> addStudent_col_dateInsert;
+
+    @FXML
+    private TableColumn<StudentData, String> addStudent_col_status;
 
     @FXML
     private Button addStudent_deleteBtn;
@@ -203,6 +232,23 @@ public class AdminMainFormController implements Initializable {
     @FXML
     private Button addCourse_deleteBtn;
 
+    @FXML
+    private TableView<CourseData> addCourse_tableView;
+
+    @FXML
+    private TableColumn<CourseData, String> addCourse_col_course;
+
+    @FXML
+    private TableColumn<CourseData, String> addCourse_col_price;
+
+    @FXML
+    private TableColumn<CourseData, String> addCourse_col_department;
+
+    @FXML
+    private TableColumn<CourseData, String> addCourse_col_dateInsert;
+
+    @FXML
+    private TableColumn<CourseData, String> addCourse_col_status;
 
     @FXML
     private AnchorPane addCourse_form;
@@ -288,6 +334,29 @@ public class AdminMainFormController implements Initializable {
     @FXML
     private Button payment_clearBtn;
 
+    @FXML
+    private TableView<StudentData> payment_tableView;
+
+    @FXML
+    private TableColumn<String, StudentData> payment_col_studentID;
+
+    @FXML
+    private TableColumn<String, StudentData> payment_col_name;
+
+    @FXML
+    private TableColumn<String, StudentData> payment_col_year;
+
+    @FXML
+    private TableColumn<String, StudentData> payment_col_section;
+
+    @FXML
+    private TableColumn<String, StudentData> payment_col_semester;
+
+    @FXML
+    private TableColumn<String, StudentData> payment_col_payment;
+
+    @FXML
+    private TableColumn<String, StudentData> payment_col_statusPayment;
 
     @FXML
     private AnchorPane salary_form;
@@ -348,6 +417,17 @@ public class AdminMainFormController implements Initializable {
     @FXML
     private TableColumn<TeacherData, String> salary_col_status;
 
+    @FXML
+    private TableView<SalaryData> salary_SP_tableView;
+
+    @FXML
+    private TableColumn<SalaryData, String> salary_SP_col_teacherID;
+
+    @FXML
+    private TableColumn<SalaryData, String> salary_SP_col_salaryPaid;
+
+    @FXML
+    private TableColumn<SalaryData, String> salary_SP_col_datePaid;
 
     @FXML
     private AnchorPane dashboard_form;
@@ -376,10 +456,41 @@ public class AdminMainFormController implements Initializable {
 
     @FXML
     private LineChart<?, ?> dashboard_chart_DI;
-
+    @FXML
+    private TableView<BookData> library_tableView;
 
     @FXML
     private AnchorPane library_form;
+
+    @FXML
+    private TableColumn<BookData, Integer> library_col_bookID;
+
+    @FXML
+    private TableColumn<BookData, String> library_col_title;
+
+    @FXML
+    private TableColumn<BookData, String> library_col_author;
+
+    @FXML
+    private TableColumn<BookData, String> library_col_category;
+
+    @FXML
+    private TableColumn<BookData, String> library_col_isbn;
+
+    @FXML
+    private TableColumn<BookData, Integer> library_col_quantity;
+
+    @FXML
+    private TableColumn<BookData, String> library_col_status;
+
+    @FXML
+    private TableColumn<BookData, String> library_col_dateInsert;
+
+    @FXML
+    private TableColumn<BookData, String> library_col_dateUpdate;
+
+    @FXML
+    private TableColumn<BookData, String> library_col_dateDelete;
 
 
     // DATABASE TOOLS
@@ -392,6 +503,157 @@ public class AdminMainFormController implements Initializable {
 
     private Image image;
 
+    public void dashboardDisplayTS() {
+        String sql = "SELECT COUNT(id) FROM student WHERE date_delete IS NULL";
+        connect = Database.connectDB();
+        int tempTS = 0;
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            if (result.next()) {
+                tempTS = result.getInt("COUNT(id)");
+            }
+            dashboard_TS.setText("" + tempTS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dashboardDisplayTT() {
+        String sql = "SELECT COUNT(id) FROM teacher WHERE date_delete IS NULL";
+        connect = Database.connectDB();
+        int tempTT = 0;
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            if (result.next()) {
+                tempTT = result.getInt("COUNT(id)");
+            }
+            dashboard_TT.setText(String.valueOf(tempTT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dashboardDisplaySRT() {
+        Date date = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        String sql = "SELECT COUNT(id) FROM student WHERE date_delete IS NULL AND date_insert = '"
+                + sqlDate + "'";
+        connect = Database.connectDB();
+        int tempSRT = 0;
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            if (result.next()) {
+                tempSRT = result.getInt("COUNT(id)");
+
+                dashboard_SRT.setText("" + tempSRT);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dashboardDisplayTI() {
+        Date date = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        String sql = "SELECT SUM(payment) FROM student WHERE status_payment = 'Paid' AND date_delete IS NULL";
+        connect = Database.connectDB();
+        double tempTI = 0;
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            if (result.next()) {
+                tempTI = result.getDouble("SUM(payment)");
+            }
+            dashboard_TI.setText("$" + tempTI);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dashboardDSChart() {
+        dashboard_chart_DS.getData().clear();
+
+        // Fix the query to include ORDER BY
+        String sql = "SELECT date_insert, COUNT(id) FROM student WHERE date_delete IS NULL GROUP BY date_insert ORDER BY date_insert ASC LIMIT 9";
+
+        connect = Database.connectDB();
+
+        try {
+            XYChart.Series chart = new XYChart.Series<>();
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                chart.getData().add(new XYChart.Data<>(result.getString(1), result.getInt(2)));
+            }
+
+            dashboard_chart_DS.getData().add(chart);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void dashboardDTChart() {
+
+        dashboard_chart_DT.getData().clear();
+
+        String sql = "SELECT date_insert, COUNT(id) FROM teacher WHERE date_delete IS NULL GROUP BY TIMESTAMP(date_insert) ASC LIMIT 5";
+
+        connect = Database.connectDB();
+
+        try {
+            XYChart.Series chart = new XYChart.Series<>();
+
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                chart.getData().add(new XYChart.Data<>(result.getString(1), result.getInt(2)));
+            }
+
+            dashboard_chart_DT.getData().add(chart);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void dashboardDIChart() {
+
+        dashboard_chart_DI.getData().clear();
+
+        String sql = "SELECT date_insert, SUM(payment) FROM student WHERE status_payment = 'Paid' AND date_delete IS NULL GROUP BY TIMESTAMP(date_insert) ASC LIMIT 5";
+
+        connect = Database.connectDB();
+
+        try {
+            XYChart.Series chart = new XYChart.Series<>();
+
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                chart.getData().add(new XYChart.Data<>(result.getString(1), result.getInt(2)));
+            }
+
+            dashboard_chart_DI.getData().add(chart);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+  
 
     public ObservableList<TeacherData> addTeacherGetData() {
 
@@ -745,6 +1007,207 @@ public class AdminMainFormController implements Initializable {
         }
     }
 
+    public ObservableList<CourseData> addCourseGetData() {
+
+        ObservableList<CourseData> listData = FXCollections.observableArrayList();
+
+        String sql = "SELECT * FROM course WHERE date_delete IS NULL";
+        connect = Database.connectDB();
+
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            CourseData cData;
+
+            while (result.next()) {
+//                CourseData(Integer id, String course, String department,
+//             Date dateInsert, Date dateUpdate, Date dateDelete, String status)
+                cData = new CourseData(result.getInt("id"), result.getString("course"),
+                        result.getString("department"), result.getDouble("price"),
+                        result.getDate("date_insert"),
+                        result.getDate("date_update"), result.getDate("date_delete"),
+                        result.getString("status"));
+
+                listData.add(cData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listData;
+    }
+
+    private ObservableList<CourseData> addCourseListData;
+
+    public void addCourseDisplayData() {
+        addCourseListData = addCourseGetData();
+
+        addCourse_col_course.setCellValueFactory(new PropertyValueFactory<>("course"));
+        addCourse_col_department.setCellValueFactory(new PropertyValueFactory<>("department"));
+        addCourse_col_price.setCellValueFactory(new PropertyValueFactory<>("price"));
+        addCourse_col_dateInsert.setCellValueFactory(new PropertyValueFactory<>("dateInsert"));
+        addCourse_col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        addCourse_tableView.setItems(addCourseListData);
+    }
+
+    private int courseID = 0;
+
+    public void addCourseSelectItem() {
+        CourseData cData = addCourse_tableView.getSelectionModel().getSelectedItem();
+        int num = addCourse_tableView.getSelectionModel().getSelectedIndex();
+
+        if ((num - 1) < -1) {
+            return;
+        }
+
+        addCourse_course.setText(cData.getCourse());
+        addCourse_department.setText(cData.getDepartment());
+        addCourse_price.setText("" + cData.getPrice());
+        addCourse_status.getSelectionModel().select(cData.getStatus());
+
+        courseID = cData.getId();
+    }
+
+    public void addCourseAddBtn() {
+
+        if (addCourse_course.getText().isEmpty()
+                || addCourse_department.getText().isEmpty()
+                || addCourse_price.getText().isEmpty()
+                || addCourse_status.getSelectionModel().getSelectedItem().isEmpty()) {
+            alert.errorMessage("Please fill all blank fields");
+        } else {
+            connect = Database.connectDB();
+
+            String checkCourse = "SELECT * FROM course WHERE course = '"
+                    + addCourse_course.getText() + "' AND date_delete IS NULL";
+            try {
+                statement = connect.createStatement();
+                result = statement.executeQuery(checkCourse);
+
+                if (result.next()) {
+                    alert.errorMessage(addCourse_course.getText() + " is already exist");
+                } else {
+                    Date date = new Date();
+                    java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+                    String insertData = "INSERT INTO course (course, department, price, date_insert, status) "
+                            + "VALUES(?,?,?,?,?)";
+
+                    prepare = connect.prepareStatement(insertData);
+                    prepare.setString(1, addCourse_course.getText());
+                    prepare.setString(2, addCourse_department.getText());
+                    prepare.setString(3, addCourse_price.getText());
+                    prepare.setString(4, String.valueOf(sqlDate));
+                    prepare.setString(5, addCourse_status.getSelectionModel().getSelectedItem());
+
+                    prepare.executeUpdate();
+
+                    addCourseDisplayData();
+
+                    alert.successMessage("Added Successfully!");
+
+                    addCourseClear();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void addCourseUpdateBtn() {
+
+        if (addCourse_course.getText().isEmpty()
+                || addCourse_department.getText().isEmpty()
+                || addCourse_price.getText().isEmpty()
+                || addCourse_status.getSelectionModel().getSelectedItem().isEmpty()) {
+            alert.errorMessage("Please fill all blank fields");
+        } else {
+            if (alert.confirmMessage("Are you sure you want to Update the course "
+                    + addCourse_course.getText() + "?")) {
+                Date date = new Date();
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+                String updateData = "UPDATE course SET course = '"
+                        + addCourse_course.getText() + "', department = '"
+                        + addCourse_department.getText() + "', price = '"
+                        + addCourse_price.getText() + "', date_update = '"
+                        + sqlDate + "', status = '"
+                        + addCourse_status.getSelectionModel().getSelectedItem() + "' "
+                        + "WHERE id = " + courseID;
+
+                connect = Database.connectDB();
+
+                try {
+                    prepare = connect.prepareStatement(updateData);
+                    prepare.executeUpdate();
+
+                    addCourseDisplayData();
+
+                    alert.successMessage("Updated Successfully!");
+
+                    addCourseClear();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                alert.errorMessage("Cancelled");
+            }
+        }
+    }
+
+    public void addCourseDeleteBtn() {
+
+        if (courseID == 0) {
+            alert.errorMessage("Please select item first");
+        } else {
+
+            if (alert.confirmMessage("Are you sure you want to Delete Course "
+                    + addCourse_course.getText() + "?")) {
+                Date date = new Date();
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                String deleteData = "UPDATE course SET date_delete = ? WHERE id = ?";
+                connect = Database.connectDB();
+
+                try {
+                    prepare = connect.prepareStatement(deleteData);
+                    prepare.setString(1, String.valueOf(sqlDate));
+                    prepare.setString(2, String.valueOf(courseID));
+
+                    prepare.executeUpdate();
+
+                    addCourseDisplayData();
+
+                    alert.successMessage("Updated Successfully!");
+
+                    addCourseClear();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public void addCourseClear() {
+        addCourse_course.clear();
+        addCourse_department.clear();
+        addCourse_price.clear();
+        addCourse_status.getSelectionModel().clearSelection();
+    }
+
+    public void addCourseStatus() {
+        List<String> listS = new ArrayList<>();
+
+        for (String data : ListData.statusA) {
+            listS.add(data);
+        }
+
+        ObservableList listData = FXCollections.observableArrayList(listS);
+        addCourse_status.setItems(listData);
+    }
+
     public ObservableList<SubjectData> addSubjectGetData() {
 
         ObservableList<SubjectData> listData = FXCollections.observableArrayList();
@@ -940,7 +1403,28 @@ public class AdminMainFormController implements Initializable {
         addSubject_status.getSelectionModel().clearSelection();
     }
 
-    //
+    public void addSubjectCourseList() {
+
+        String sql = "SELECT * FROM course WHERE date_delete IS NULL";
+        connect = Database.connectDB();
+
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            ObservableList listData = FXCollections.observableArrayList();
+
+            while (result.next()) {
+                listData.add(result.getString("course"));
+            }
+
+            addSubject_course.setItems(listData);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void addSubjectStatusList() {
 
         List<String> listS = new ArrayList<>();
@@ -953,9 +1437,413 @@ public class AdminMainFormController implements Initializable {
         addSubject_status.setItems(listData);
     }
 
+    public ObservableList<StudentData> paymentGetData() {
+
+        ObservableList<StudentData> listData = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM student WHERE status_payment = 'Pending' AND date_delete IS NULL";
+
+        connect = Database.connectDB();
+
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            StudentData sData;
+
+            while (result.next()) {
+//StudentData(Integer id, String studentID, String fullName, String year, String course,
+//            String section, String semester, Double payment, String statusPayment, String image,
+//            Date dateUpdate, String status)
+                sData = new StudentData(result.getInt("id"), result.getString("student_id"),
+                        result.getString("full_name"), result.getString("year"),
+                        result.getString("course"), result.getString("section"),
+                        result.getString("semester"), result.getDouble("payment"),
+                        result.getString("status_payment"), result.getString("image"),
+                        result.getDate("date_update"), result.getString("status"));
+
+                listData.add(sData);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listData;
+    }
+
+    private ObservableList<StudentData> paymentListData;
+
+    public void paymentDisplayData() {
+        paymentListData = paymentGetData();
+
+        payment_col_studentID.setCellValueFactory(new PropertyValueFactory<>("studentID"));
+        payment_col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        payment_col_year.setCellValueFactory(new PropertyValueFactory<>("year"));
+        payment_col_section.setCellValueFactory(new PropertyValueFactory<>("section"));
+        payment_col_semester.setCellValueFactory(new PropertyValueFactory<>("semester"));
+        payment_col_payment.setCellValueFactory(new PropertyValueFactory<>("payment"));
+        payment_col_statusPayment.setCellValueFactory(new PropertyValueFactory<>("statusPayment"));
+
+        payment_tableView.setItems(paymentListData);
+
+    }
+
+    public void paymentSelectItem() {
+        StudentData sData = payment_tableView.getSelectionModel().getSelectedItem();
+        int num = payment_tableView.getSelectionModel().getSelectedIndex();
+
+        if ((num - 1) < -1) {
+            return;
+        }
+
+        payment_studentID.setText(sData.getStudentID());
+        payment_name.setText(sData.getFullName());
+        payment_year.setText(sData.getYear());
+        payment_section.setText(sData.getSection());
+        payment_semester.setText(sData.getSemester());
+        payment_payment.setText("" + sData.getPayment());
+
+        ListData.path = sData.getImage();
+
+        image = new Image("File:" + ListData.path, 94, 96, false, true);
+        payment_imageView.setImage(image);
+
+        payment_status.getSelectionModel().select(sData.getStatusPayment());
+    }
+
+    public void paymentDisableFields() {
+        payment_studentID.setDisable(true);
+        payment_name.setDisable(true);
+        payment_year.setDisable(true);
+        payment_section.setDisable(true);
+        payment_semester.setDisable(true);
+        payment_payment.setDisable(true);
+    }
+
+    public void paymentPaymentStatusList() {
+
+        List<String> listPS = new ArrayList<>();
+
+        for (String data : ListData.paymentStatus) {
+            listPS.add(data);
+        }
+
+        ObservableList listData = FXCollections.observableArrayList(listPS);
+        payment_status.setItems(listData);
+
+    }
+
+    public void paymentUpdateBtn() {
+
+        if (payment_studentID.getText().isEmpty()
+                || payment_payment.getText().isEmpty()) {
+            alert.errorMessage("Please select item first");
+        } else {
+            if (alert.confirmMessage("Are you sure?")) {
+                String updateData = "UPDATE student SET status_payment = ? WHERE student_id = ?";
+                connect = Database.connectDB();
+
+                try {
+                    prepare = connect.prepareStatement(updateData);
+                    prepare.setString(1, payment_status.getSelectionModel().getSelectedItem());
+                    prepare.setString(2, payment_studentID.getText());
+                    prepare.executeUpdate();
+
+                    paymentDisplayData();
+
+                    alert.successMessage("Updated Successfully!");
+
+                    paymentClearBtn();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public void paymentClearBtn() {
+
+        payment_studentID.clear();
+        payment_name.clear();
+        payment_year.clear();
+        payment_section.clear();
+        payment_semester.clear();
+        payment_payment.clear();
+
+        ListData.path = "";
+
+        payment_imageView.setImage(null);
+
+        payment_status.getSelectionModel().clearSelection();
+
+    }
+
+    public ObservableList<TeacherData> salaryGetData() {
+
+        ObservableList<TeacherData> listData = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM teacher WHERE salary_status = 'Pending' AND date_delete IS NULL AND status = 'Active'";
+        connect = Database.connectDB();
+
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            TeacherData tData;
+            while (result.next()) {
+
+//                TeacherData(Integer id, String teacherID, String fullName,
+//            String gender, Double salary, String salaryStatus, Date dateInsert,
+//            Date dateUpdate, String status)
+                tData = new TeacherData(result.getInt("id"),
+                        result.getString("teacher_id"), result.getString("full_name"),
+                        result.getString("gender"), result.getDouble("salary"),
+                        result.getString("salary_status"), result.getDate("date_insert"),
+                        result.getDate("date_update"), result.getString("status"));
+
+                listData.add(tData);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listData;
+    }
+
+    private ObservableList<TeacherData> salaryListData;
+
+    public void salaryDisplayData() {
+        salaryListData = salaryGetData();
+
+        salary_col_teacherID.setCellValueFactory(new PropertyValueFactory<>("teacherID"));
+        salary_col_fullName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        salary_col_gender.setCellValueFactory(new PropertyValueFactory<>("gender"));
+        salary_col_salaryPerDay.setCellValueFactory(new PropertyValueFactory<>("salary"));
+        salary_col_dateInsert.setCellValueFactory(new PropertyValueFactory<>("dateInsert"));
+        salary_col_dateUpdate.setCellValueFactory(new PropertyValueFactory<>("dateUpdate"));
+        salary_col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        salary_tableView.setItems(salaryListData);
+    }
+
+    public void salarySelectItem() {
+
+        TeacherData tData = salary_tableView.getSelectionModel().getSelectedItem();
+        int num = salary_tableView.getSelectionModel().getSelectedIndex();
+
+        if ((num - 1) < -1) {
+            return;
+        }
+
+        salary_teacherID.setText(tData.getTeacherID());
+        salary_name.setText(tData.getFullName());
+        salary_salaryPerDay.setText("" + tData.getSalary());
+        salary_status.getSelectionModel().select(tData.getSalaryStatus());
+
+    }
+
+    public void salaryDisableFields() {
+        salary_teacherID.setDisable(true);
+        salary_name.setDisable(true);
+        salary_salaryPerDay.setDisable(true);
+    }
+
+    public double salaryGetSalaryPerDay() {
+
+        double getSalary = 0;
+
+        String sql = "SELECT * FROM teacher WHERE teacher_id = '"
+                + salary_teacherID.getText() + "'";
+        connect = Database.connectDB();
+
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            if (result.next()) {
+                getSalary = result.getDouble("salary");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getSalary;
+    }
+
+    private long countDays;
+    private double totalSalary;
+
+    public void salaryCountDays() {
+        if (salary_fromDate.getValue() != null
+                || salary_toDate.getValue() != null) {
+            try {
+                countDays = ChronoUnit.DAYS.between(salary_fromDate.getValue(), salary_toDate.getValue());
+
+                totalSalary = (salaryGetSalaryPerDay() * countDays);
+
+                salary_totalDays.setText("" + countDays);
+                salary_salary.setText("$" + totalSalary);
+
+            } catch (Exception e) {
+                alert.errorMessage("Invalid.");
+            }
+        }
+    }
+
+    public void salaryPayBtn() {
+
+        if (salary_totalDays.getText().equals("-----")
+                || salary_salary.getText().equals("-----")
+                || salary_teacherID.getText().isEmpty()
+                || totalSalary == 0
+                || countDays == 0) {
+            alert.errorMessage("Please select item first");
+        } else {
+            if (alert.confirmMessage("Pay?")) {
+                String sql = "INSERT INTO salary "
+                        + "(teacher_id, name, salary_per_day, total_days, salary_paid, date_paid)"
+                        + " VALUES(?,?,?,?,?,?)";
+
+                connect = Database.connectDB();
+
+                try {
+                    Date date = new Date();
+                    java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                    prepare = connect.prepareStatement(sql);
+                    prepare.setString(1, salary_teacherID.getText());
+                    prepare.setString(2, salary_name.getText());
+                    prepare.setString(3, salary_salaryPerDay.getText());
+                    prepare.setString(4, "" + countDays);
+                    prepare.setString(5, "" + totalSalary);
+                    prepare.setString(6, "" + sqlDate);
+
+                    prepare.executeUpdate();
+
+                    String updateData = "UPDATE teacher SET salary_status = ? WHERE teacher_id = ?";
+
+                    prepare = connect.prepareStatement(updateData);
+                    prepare.setString(1, salary_status.getSelectionModel().getSelectedItem());
+                    prepare.setString(2, salary_teacherID.getText());
+
+                    prepare.executeUpdate();
+
+                    salaryDisplayData();
+
+                    alert.successMessage("Paid successfully!");
+
+                    salaryClear();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void salaryClear() {
+        salary_teacherID.clear();
+        salary_name.clear();
+        salary_salaryPerDay.clear();
+        salary_status.getSelectionModel().clearSelection();
+        salary_fromDate.setValue(null);
+        salary_toDate.setValue(null);
+        countDays = 0;
+        totalSalary = 0;
+    }
+
+    public void salarySalaryStatusList() {
+
+        List<String> listSS = new ArrayList<>();
+
+        for (String data : ListData.paymentStatus) {
+            listSS.add(data);
+        }
+
+        ObservableList listData = FXCollections.observableArrayList(listSS);
+        salary_status.setItems(listData);
+
+    }
+
+    public ObservableList<SalaryData> salarySPGetdata() {
+
+        ObservableList<SalaryData> listData = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM salary";
+
+        connect = Database.connectDB();
+
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            SalaryData sData;
+
+            while (result.next()) {
+//                SalaryData(Integer id, String teacherID, String name, Double salaryPerDay,
+//            Integer totalDays, Double salaryPaid, Date datePaid)
+                sData = new SalaryData(result.getInt("id"),
+                        result.getString("teacher_id"),
+                        result.getString("name"),
+                        result.getDouble("salary_per_day"),
+                        result.getInt("total_days"),
+                        result.getDouble("salary_paid"),
+                        result.getDate("date_paid"));
+
+                listData.add(sData);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listData;
+    }
+
+    private ObservableList<SalaryData> salarySPListData;
+
+    public void salaryDisplaydata() {
+        salarySPListData = salarySPGetdata();
+
+        salary_SP_col_teacherID.setCellValueFactory(new PropertyValueFactory<>("teacherID"));
+        salary_SP_col_salaryPaid.setCellValueFactory(new PropertyValueFactory<>("salaryPaid"));
+        salary_SP_col_datePaid.setCellValueFactory(new PropertyValueFactory<>("datePaid"));
+
+        salary_SP_tableView.setItems(salarySPListData);
+    }
+
     public void switchForm(ActionEvent event) {
 
-        if (event.getSource() == addTeacher_btn) {
+        if (event.getSource() == dashboard_btn) {
+
+            dashboard_form.setVisible(true);
+            addStudent_form.setVisible(false);
+            addTeacher_form.setVisible(false);
+            addCourse_form.setVisible(false);
+            addSubject_form.setVisible(false);
+            payment_form.setVisible(false);
+            salary_form.setVisible(false);
+            library_form.setVisible(false);
+            request_form.setVisible(false);
+
+
+            dashboardDisplayTS();
+            dashboardDisplayTT();
+            dashboardDisplaySRT();
+            dashboardDisplayTI();
+            dashboardDSChart();
+            dashboardDTChart();
+            dashboardDIChart();
+
+        } else if (event.getSource() == addStudent_btn) {
+            dashboard_form.setVisible(false);
+            addStudent_form.setVisible(true);
+            addTeacher_form.setVisible(false);
+            addCourse_form.setVisible(false);
+            addSubject_form.setVisible(false);
+            payment_form.setVisible(false);
+            salary_form.setVisible(false);
+            library_form.setVisible(false);
+            request_form.setVisible(false);
+
+            addStudentDisplayData();
+        } else if (event.getSource() == addTeacher_btn) {
             dashboard_form.setVisible(false);
             addStudent_form.setVisible(false);
             addTeacher_form.setVisible(true);
@@ -974,6 +1862,20 @@ public class AdminMainFormController implements Initializable {
             addTeacherDepartmentList();
             addTeacherStatusList();
             addTeacherDisplayTeacherID();
+        } else if (event.getSource() == addCourse_btn) {
+            dashboard_form.setVisible(false);
+            addStudent_form.setVisible(false);
+            addTeacher_form.setVisible(false);
+            addCourse_form.setVisible(true);
+            addSubject_form.setVisible(false);
+            payment_form.setVisible(false);
+            salary_form.setVisible(false);
+            library_form.setVisible(false);
+            request_form.setVisible(false);
+
+
+            addCourseDisplayData();
+            addCourseStatus();
         } else if (event.getSource() == addSubject_btn) {
             dashboard_form.setVisible(false);
             addStudent_form.setVisible(false);
@@ -986,8 +1888,64 @@ public class AdminMainFormController implements Initializable {
             request_form.setVisible(false);
 
             addSubjectDisplayData();
-            //addSubjectCourseList();
+            addSubjectCourseList();
             addSubjectStatusList();
+        } else if (event.getSource() == payment_btn) {
+            dashboard_form.setVisible(false);
+            addStudent_form.setVisible(false);
+            addTeacher_form.setVisible(false);
+            addCourse_form.setVisible(false);
+            addSubject_form.setVisible(false);
+            payment_form.setVisible(true);
+            salary_form.setVisible(false);
+            library_form.setVisible(false);
+            request_form.setVisible(false);
+
+
+            paymentDisplayData();
+            paymentPaymentStatusList();
+            paymentDisableFields();
+        } else if (event.getSource() == salary_btn) {
+            dashboard_form.setVisible(false);
+            addStudent_form.setVisible(false);
+            addTeacher_form.setVisible(false);
+            addCourse_form.setVisible(false);
+            addSubject_form.setVisible(false);
+            payment_form.setVisible(false);
+            salary_form.setVisible(true);
+            library_form.setVisible(false);
+            request_form.setVisible(false);
+
+            salaryDisplayData();
+            salaryDisableFields();
+            salarySalaryStatusList();
+            salaryDisplaydata();
+        } else if (event.getSource() == library_btn) {
+            dashboard_form.setVisible(false);
+            addStudent_form.setVisible(false);
+            addTeacher_form.setVisible(false);
+            addCourse_form.setVisible(false);
+            addSubject_form.setVisible(false);
+            payment_form.setVisible(false);
+            salary_form.setVisible(false);
+            library_form.setVisible(true);
+            request_form.setVisible(false);
+
+            libraryDisplayData();
+            // libraryStatusList();
+        } else if (event.getSource() == requestBtn) { // New case for library
+            dashboard_form.setVisible(false);
+            addStudent_form.setVisible(false);
+            addTeacher_form.setVisible(false);
+            addCourse_form.setVisible(false);
+            addSubject_form.setVisible(false);
+            payment_form.setVisible(false);
+            salary_form.setVisible(false);
+            library_form.setVisible(false);
+            request_form.setVisible(true);
+
+            handleRequest();
+
         }
 
         // Method to load library data
@@ -1020,6 +1978,37 @@ public class AdminMainFormController implements Initializable {
 
     }
 
+
+    public void displayGreet() {
+        System.out.println("Checking greet_username: " + greet_username);
+        if (greet_username != null) {
+            String username = ListData.admin_username;
+            username = username.substring(0, 1).toUpperCase() + username.substring(1);
+            greet_username.setText("Welcome, " + username);
+        } else {
+            System.out.println("ERROR: greet_username is NULL! Check FXML file.");
+        }
+    }
+
+
+
+
+
+
+   /* @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+        displayGreet();
+
+        dashboardDisplayTS();
+        dashboardDisplayTT();
+        dashboardDisplaySRT();
+        dashboardDisplayTI();
+        dashboardDSChart();
+        dashboardDTChart();
+        dashboardDIChart();
+    }*/
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Initializing dashboard...");
@@ -1035,4 +2024,28 @@ public class AdminMainFormController implements Initializable {
         } else {
             System.out.println("Database connected.");
         }
-    }}
+
+        displayGreet();
+        dashboardDisplayTS();
+        dashboardDisplayTT();
+        dashboardDisplaySRT();
+        dashboardDisplayTI();
+        dashboardDSChart();
+        dashboardDTChart();
+        dashboardDIChart();
+    }
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+

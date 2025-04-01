@@ -1831,19 +1831,7 @@ public class AdminMainFormController implements Initializable {
             dashboardDTChart();
             dashboardDIChart();
 
-        } else if (event.getSource() == addStudent_btn) {
-            dashboard_form.setVisible(false);
-            addStudent_form.setVisible(true);
-            addTeacher_form.setVisible(false);
-            addCourse_form.setVisible(false);
-            addSubject_form.setVisible(false);
-            payment_form.setVisible(false);
-            salary_form.setVisible(false);
-            library_form.setVisible(false);
-            request_form.setVisible(false);
-
-            addStudentDisplayData();
-        } else if (event.getSource() == addTeacher_btn) {
+        }else if (event.getSource() == addTeacher_btn) {
             dashboard_form.setVisible(false);
             addStudent_form.setVisible(false);
             addTeacher_form.setVisible(true);
@@ -1920,7 +1908,19 @@ public class AdminMainFormController implements Initializable {
             salaryDisableFields();
             salarySalaryStatusList();
             salaryDisplaydata();
-        } else if (event.getSource() == library_btn) {
+        } if (event.getSource() == addStudent_btn) {
+            dashboard_form.setVisible(false);
+            addStudent_form.setVisible(true);
+            addTeacher_form.setVisible(false);
+            addCourse_form.setVisible(false);
+            addSubject_form.setVisible(false);
+            payment_form.setVisible(false);
+            salary_form.setVisible(false);
+            library_form.setVisible(false);
+            request_form.setVisible(false);
+
+            addStudentDisplayData();
+        }  else if (event.getSource() == library_btn) {
             dashboard_form.setVisible(false);
             addStudent_form.setVisible(false);
             addTeacher_form.setVisible(false);
@@ -2035,6 +2035,438 @@ public class AdminMainFormController implements Initializable {
         dashboardDIChart();
     }
 
+    private AlertMessage alert = new AlertMessage();
+
+
+    public ObservableList<StudentData> addStudentGetData() {
+
+        ObservableList<StudentData> listData = FXCollections.observableArrayList();
+        String selectData = "SELECT * FROM student WHERE date_delete IS NULL";
+
+        connect = Database.connectDB();
+
+        StudentData sData;
+
+        try {
+            prepare = connect.prepareStatement(selectData);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+//                StudentData(Integer id, String studentID, String fullName, String year, String course,
+//            String section, Double payment, String statusPayment, Date dateInsert, String status)
+
+                sData = new StudentData(result.getInt("id"), result.getString("student_id"),
+                        result.getString("full_name"), result.getString("year"),
+                        result.getString("course"), result.getString("section"),
+                        result.getString("semester"),
+                        result.getDouble("payment"), result.getString("status_payment"),
+                        result.getDate("date_insert"), result.getString("status"));
+                listData.add(sData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listData;
+    }
+
+    private ObservableList<StudentData> addStudentListData;
+
+    public void addStudentDisplayData() {
+        addStudentListData = addStudentGetData();
+
+        addStudent_col_studentNumber.setCellValueFactory(new PropertyValueFactory<>("studentID"));
+        addStudent_col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        addStudent_col_year.setCellValueFactory(new PropertyValueFactory<>("year"));
+        addStudent_col_course.setCellValueFactory(new PropertyValueFactory<>("course"));
+        addStudent_col_section.setCellValueFactory(new PropertyValueFactory<>("section"));
+        addStudent_col_pay.setCellValueFactory(new PropertyValueFactory<>("payment"));
+        addStudent_col_statusPayment.setCellValueFactory(new PropertyValueFactory<>("statusPayment"));
+        addStudent_col_dateInsert.setCellValueFactory(new PropertyValueFactory<>("dateInsert"));
+        addStudent_col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        addStudent_tableView.setItems(addStudentListData);
+    }
+
+    public void addStudentAddBtn() {
+
+        System.out.println("Add button clicked!");
+
+        clearTempStudentData();
+
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("AddStudent.fxml"));
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Add Student");
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void addStudentUpdateBtn() {
+
+        StudentData sData = addStudent_tableView.getSelectionModel().getSelectedItem();
+        int num = addStudent_tableView.getSelectionModel().getSelectedIndex();
+        if ((num - 1) < -1) {
+            alert.errorMessage("Please select the item first");
+            return;
+        } else {
+            ListData.temp_studentNumber = sData.getStudentID();
+            ListData.temp_studentName = sData.getFullName();
+            ListData.temp_studentBirthDate = sData.getBirthDate();
+            ListData.temp_studentYear = sData.getYear();
+            ListData.temp_studentCourse = sData.getCourse();
+            ListData.temp_studentGender = sData.getGender();
+            ListData.temp_studentSemester = sData.getSemester();
+            ListData.temp_studentSection = sData.getSection();
+            ListData.temp_studentPay = sData.getPayment();
+            ListData.temp_studentPaymentStatus = sData.getStatusPayment();
+            ListData.temp_studentStatus = sData.getStatus();
+
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("AddStudent.fxml"));
+                Stage stage = new Stage();
+
+                stage.setTitle("Update Student");
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public void addStudentDeleteBtn() {
+
+        StudentData sData = addStudent_tableView.getSelectionModel().getSelectedItem();
+        int num = addStudent_tableView.getSelectionModel().getSelectedIndex();
+
+        Date date = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+        if ((num - 1) < -1) {
+            alert.errorMessage("Please select item first");
+            return;
+        } else {
+            if (alert.confirmMessage("Are you sure you want to Delete Student ID: "
+                    + sData.getStudentID() + "?")) {
+
+                // Update both date_delete and status to "Deleted"
+                String deleteData = "UPDATE student SET date_delete = ?, status = ? WHERE student_id = ?";
+                connect = Database.connectDB();
+
+                try {
+                    prepare = connect.prepareStatement(deleteData);
+                    prepare.setDate(1, sqlDate);
+                    prepare.setString(2, "Deleted");
+                    prepare.setString(3, sData.getStudentID());
+
+                    prepare.executeUpdate();
+                    alert.successMessage("Deleted and marked as Deleted successfully!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                alert.errorMessage("Cancelled.");
+            }
+        }
+        addStudentDisplayData();
+    }
+
+    private void clearTempStudentData() {
+        ListData.temp_studentNumber = null;
+        ListData.temp_studentName = null;
+        ListData.temp_studentBirthDate = null;
+        ListData.temp_studentYear = null;
+        ListData.temp_studentCourse = null;
+        ListData.temp_studentGender = null;
+        ListData.temp_studentSemester = null;
+        ListData.temp_studentSection = null;
+        ListData.temp_studentPay = null;
+        ListData.temp_studentPaymentStatus = null;
+        ListData.temp_studentStatus = null;
+    }
+
+
+
+
+
+
+
+    public ObservableList<BookData> libraryGetData() {
+        ObservableList<BookData> listData = FXCollections.observableArrayList();
+        String selectData = "SELECT book_id, title, author, category, isbn, quantity, status, date_insert FROM books";
+
+        try (Connection connect = Database.connectDB();
+             PreparedStatement prepare = connect.prepareStatement(selectData);
+             ResultSet result = prepare.executeQuery()) {
+
+            while (result.next()) {
+                BookData bData = new BookData(
+                        result.getInt("book_id"),
+                        result.getString("title"),
+                        result.getString("author"),
+                        result.getString("category"),
+                        result.getString("isbn"),
+                        result.getInt("quantity"),
+                        result.getString("status"),
+                        result.getDate("date_insert"),
+                        null,  // Assuming dateUpdated is not fetched here
+                        null   // Assuming dateDeleted is not fetched here
+                );
+                listData.add(bData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listData;
+    }
+
+
+    private ObservableList<BookData> libraryListData;
+
+    public void libraryDisplayData() {
+        libraryListData = libraryGetData();
+
+
+        library_col_isbn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+
+        library_col_title.setCellValueFactory(new PropertyValueFactory<>("title"));
+        library_col_author.setCellValueFactory(new PropertyValueFactory<>("author"));
+        library_col_category.setCellValueFactory(new PropertyValueFactory<>("category"));
+
+        library_col_quantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        library_col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+        library_col_dateInsert.setCellValueFactory(new PropertyValueFactory<>("dateAdded")); // Binding the dateAdded column
+
+        library_tableView.setItems(libraryListData);
+    }
+
+
+    public void libraryAddBtn() {
+        clearTempBookData();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("addLibrary.fxml"));
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Add Book");
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void libraryUpdateBtn() {
+
+        BookData bData = library_tableView.getSelectionModel().getSelectedItem();
+        int num = library_tableView.getSelectionModel().getSelectedIndex();
+        if ((num - 1) < -1) {
+            alert.errorMessage("Please select the item first");
+            return;
+        } else {
+            ListData.temp_bookID = bData.getBookID();
+            ListData.temp_title = bData.getTitle();
+            ListData.temp_author = bData.getAuthor();
+            ListData.temp_category = bData.getCategory();
+            ListData.temp_isbn = bData.getIsbn();
+            ListData.temp_quantity = bData.getQuantity();
+            ListData.temp_status = bData.getStatus();
+
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("AddLibrary.fxml"));
+                Stage stage = new Stage();
+
+                stage.setTitle("Update Book");
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void libraryDeleteBtn() {
+
+        BookData bData = library_tableView.getSelectionModel().getSelectedItem();
+        int num = library_tableView.getSelectionModel().getSelectedIndex();
+
+        if ((num - 1) < -1) {
+            alert.errorMessage("Please select item first");
+            return;
+        } else {
+            if (alert.confirmMessage("Are you sure you want to Delete Book ID: "
+                    + bData.getBookID() + "?")) {
+
+                String deleteData = "DELETE FROM books WHERE book_id = ?";
+                connect = Database.connectDB();
+
+                try {
+                    prepare = connect.prepareStatement(deleteData);
+                    prepare.setInt(1, bData.getBookID());
+
+                    prepare.executeUpdate();
+                    alert.successMessage("Deleted successfully!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                alert.errorMessage("Cancelled.");
+            }
+        }
+        libraryDisplayData();
+    }
+
+    private void clearTempBookData() {
+        ListData.temp_bookID = null;
+        ListData.temp_title = null;
+        ListData.temp_author = null;
+        ListData.temp_isbn = null;
+        ListData.temp_category = null;
+        ListData.temp_quantity = null;
+        ListData.temp_status = null;
+    }
+
+    @FXML
+    private TextField searchField;
+
+    public void handleSearch(ActionEvent actionEvent) {
+        String searchText = searchField.getText().trim();
+
+        // Construct the SQL query
+        String sql = "SELECT * FROM books WHERE isbn LIKE ? OR title LIKE ? OR author LIKE ?";
+
+        try (Connection connect = Database.connectDB();
+             PreparedStatement prepare = connect.prepareStatement(sql)) {
+
+            // Set parameters for prepared statement
+            prepare.setString(1, searchText + "%");  // ISBN
+            prepare.setString(2, "%" + searchText + "%");  // Title
+            prepare.setString(3, "%" + searchText + "%");  // Author
+
+            ResultSet result = prepare.executeQuery();
+            ObservableList<BookData> filteredList = FXCollections.observableArrayList();
+
+            while (result.next()) {
+                BookData bData = new BookData(
+                        result.getInt("book_id"),
+                        result.getString("title"),
+                        result.getString("author"),
+                        result.getString("category"),
+                        result.getString("isbn"),
+                        result.getInt("quantity"),
+                        null,
+                        result.getDate("date_insert"),
+                        null,  // Assuming dateUpdated is not fetched here
+                        null   // Assuming dateDeleted is not fetched here
+                );
+                filteredList.add(bData);
+            }
+            library_tableView.setItems(filteredList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    @FXML
+    private TableView<bookrequestData> bookreq_tableView1;
+    @FXML
+    private TableColumn<BookData, Integer> req_id, stu_id, library_col_quantity1;
+    @FXML
+    private TableColumn<BookData, String> title_id, author_id, book_isbn, req_date;
+
+    private ObservableList<bookrequestData> bookRequestsListData;
+
+    public void handleRequest() {
+        bookRequestsListData = getBookRequestsData();
+
+        req_id.setCellValueFactory(new PropertyValueFactory<>("requestId"));
+        stu_id.setCellValueFactory(new PropertyValueFactory<>("studentId"));
+        title_id.setCellValueFactory(new PropertyValueFactory<>("title"));
+        author_id.setCellValueFactory(new PropertyValueFactory<>("author"));
+        book_isbn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        library_col_quantity1.setCellValueFactory(new PropertyValueFactory<>("status"));
+        req_date.setCellValueFactory(new PropertyValueFactory<>("requestDate")); // Make sure to have a corresponding getter in BookData
+
+        bookreq_tableView1.setItems(bookRequestsListData);
+    }
+
+    public ObservableList<bookrequestData> getBookRequestsData() {
+        ObservableList<bookrequestData> listData = FXCollections.observableArrayList();
+        String query = "SELECT request_id, student_id, title, author, isbn, request_date, status, due_date FROM book_requests";
+
+        try (Connection conn = Database.connectDB();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                listData.add(new bookrequestData(
+                        rs.getInt("request_id"),
+                        rs.getString("student_id"),
+                        rs.getString("title"),
+                        rs.getString("author"),
+                        rs.getString("isbn"),
+                        rs.getDate("request_date"),
+                        rs.getString("status"),
+                        rs.getDate("due_date"),
+                        null
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Print the stack trace to diagnose the exception
+        }
+        return listData;  // Return the list containing the data
+    }
+
+    public void manageBtn(ActionEvent actionEvent) {
+        bookrequestData bData = bookreq_tableView1.getSelectionModel().getSelectedItem();
+
+        int num = bookreq_tableView1.getSelectionModel().getSelectedIndex();
+        if (num == -1) {
+            alert.errorMessage("Please select the item first");
+            return;
+        }
+
+        System.out.println("Selected Request ID: " + ListData.temp_reqID);
+
+
+        ListData.temp_reqID = bData.getRequestId();
+        ListData.temp_studentNumber = bData.getStudentId();
+        ListData.temp_title = bData.getTitle();
+        ListData.temp_author = bData.getAuthor();
+        ListData.temp_isbn = bData.getIsbn();
+        ListData.temp_reqDate = String.valueOf(bData.getRequestDate());
+        ListData.temp_dueDate = String.valueOf(bData.getdueDate());
+        ListData.temp_returnDate = String.valueOf(bData.getreturnDate());
+        ListData.temp_status = bData.getStatus();
+
+        try {
+
+            System.out.println("Trying to load: " + getClass().getResource("/universitiymanagementsystem/bookrequest.fxml"));
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("bookrequest.fxml"));
+            Parent root = loader.load();
+            bookRequestController controller = loader.getController();
+            controller.loadRequestData(ListData.temp_reqID, ListData.temp_dueDate, ListData.temp_status, ListData.temp_if_rejected);
+
+            Stage stage = new Stage();
+            stage.setTitle("Manage Request");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            alert.errorMessage("Failed to load bookrequest.fxml. Check the file path.");
+        }
+
+    }
 
 
 

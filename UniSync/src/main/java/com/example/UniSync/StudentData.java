@@ -24,6 +24,8 @@ public class StudentData {
     private Double payment;
     private String statusPayment;
     private String image;
+    private int age;
+
     private Date dateInsert;
     private Date dateUpdate;
     private Date dateDelete;
@@ -31,7 +33,7 @@ public class StudentData {
     private String semester;
 
     public StudentData(Integer id, String studentID, String fullName, String gender,
-                       Date birthDate, String year, String course, String section,
+                       Date birthDate, int age, String year, String course, String section, String semester,
                        Double payment, String statusPayment, String image, Date dateInsert,
                        Date dateUpdate, Date dateDelete, String status) {
         this.id = id;
@@ -39,9 +41,11 @@ public class StudentData {
         this.fullName = fullName;
         this.gender = gender;
         this.birthDate = birthDate;
+        this.age = age;
         this.year = year;
         this.course = course;
         this.section = section;
+        this.semester = semester;
         this.payment = payment;
         this.statusPayment = statusPayment;
         this.image = image;
@@ -83,6 +87,8 @@ public class StudentData {
         this.status = status;
     }
 
+
+
     public Integer getId() {
         return id;
     }
@@ -105,6 +111,10 @@ public class StudentData {
 
     public String getYear() {
         return year;
+    }
+
+    public int getAge() {
+        return age;
     }
 
     public String getCourse() {

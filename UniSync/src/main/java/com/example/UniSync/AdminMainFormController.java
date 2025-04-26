@@ -2400,7 +2400,7 @@ public class AdminMainFormController implements Initializable {
         bookreq_tableView1.setItems(bookRequestsListData);
     }
 
-    public ObservableList<bookrequestData> getBookRequestsData() {
+   /* public ObservableList<bookrequestData> getBookRequestsData() {
         ObservableList<bookrequestData> listData = FXCollections.observableArrayList();
         String query = "SELECT request_id, student_id, title, author, isbn, request_date, status, due_date FROM book_requests";
 
@@ -2424,7 +2424,7 @@ public class AdminMainFormController implements Initializable {
             e.printStackTrace();  // Print the stack trace to diagnose the exception
         }
         return listData;  // Return the list containing the data
-    }
+    }*/ //i commented out tis on 4 april
 
     public void manageBtn(ActionEvent actionEvent) {
         bookrequestData bData = bookreq_tableView1.getSelectionModel().getSelectedItem();

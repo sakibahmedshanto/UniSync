@@ -14,9 +14,13 @@ public class bookrequestData {
 
     private Date returnDate;
     private String status;
+    //-------------------   new ---------------------- //
+    private String AutoReq;
+    //-------------------   new ---------------------- //
+    private String ifRejected;
 
-    // Constructor
-    public bookrequestData(int requestId, String studentId, String title, String author, String isbn, Date requestDate, String status, Date dueDate, Date returnDate) {
+    //-------------------   new ---------------------- //
+    public bookrequestData(int requestId, String studentId, String title, String author, String isbn, Date requestDate, String status, Date dueDate, Date returnDate, String AutoReq) {
         this.requestId = requestId;
         this.studentId = studentId;
         this.title = title;
@@ -26,9 +30,31 @@ public class bookrequestData {
         this.status = status;
         this.dueDate = dueDate;
         this.returnDate = returnDate;
+        this. autoApprovalSuggested = AutoReq;
+    }
+    //-------------------   new ---------------------- //
+    public bookrequestData(int requestId, String title, String author, String status, String isbn, Date dueDate, String ifRejected) {
+        this.requestId = requestId;
+        this.title = title;
+        this.author = author;
+        this.status = status;
+        this.isbn = isbn;
+        this.dueDate = dueDate;
+        this.ifRejected = ifRejected;
     }
 
+
     // Getters
+    // Change the field name and getter:
+    private String autoApprovalSuggested;
+    //-------------------   new ---------------------- //
+    public String getAutoApprovalSuggested() {
+        return autoApprovalSuggested;
+    }
+
+    public void setAutoApprovalSuggested(String autoApprovalSuggested) {
+        this.autoApprovalSuggested = autoApprovalSuggested;
+    }
     public int getRequestId( ) {
         return requestId;
     }
@@ -53,16 +79,19 @@ public class bookrequestData {
         return requestDate;
     }
 
-    public Date getdueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public Date getreturnDate() {
+    public Date getReturnDate() {
         return returnDate;
     }
 
     public String getStatus() {
         return status;
+    }
+    public String getIfRejected() {
+        return ifRejected;
     }
 
     // Setters
@@ -101,5 +130,34 @@ public class bookrequestData {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getAutoReq() {
+        return AutoReq;
+    }
+
+    public void setAutoReq(String autoReq) {
+        this.AutoReq = autoReq;
+    }
+    //-------------------   new ---------------------- //
+    private Double fineAmount;
+
+    public Double getFineAmount() {
+        return fineAmount;
+    }
+
+    public void setFineAmount(Double fineAmount) {
+        this.fineAmount = fineAmount;
+    }
+    //-------------------   new ---------------------- // for fine
+    public bookrequestData(int requestId, String studentId, String isbn, Date dueDate, Date returnDate, Double fineAmount) {
+        this.requestId = requestId;
+        this.studentId = studentId;
+        this.isbn = isbn;
+        this.dueDate = dueDate;
+        this.returnDate = returnDate;
+        this.fineAmount = fineAmount;
+    }
+
+
 }
 

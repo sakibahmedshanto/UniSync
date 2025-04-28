@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.UniSync;
 
 import java.net.URL;
 import java.sql.CallableStatement;

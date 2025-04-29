@@ -1821,6 +1821,7 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
 
 
             dashboardDisplayTS();
@@ -1841,6 +1842,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
 
             addTeacherDisplayData();
@@ -1860,6 +1863,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
 
             addCourseDisplayData();
@@ -1874,6 +1879,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
             addSubjectDisplayData();
             addSubjectCourseList();
@@ -1888,6 +1895,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
 
             paymentDisplayData();
@@ -1903,6 +1912,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(true);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
             salaryDisplayData();
             salaryDisableFields();
@@ -1918,6 +1929,7 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
 
             addStudentDisplayData();
         }  else if (event.getSource() == library_btn) {
@@ -1930,21 +1942,15 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(true);
             request_form.setVisible(false);
+            library_menu_form.setVisible(true);//new
+            request_form.setVisible(false); //new
+            library_form.setVisible(false); //new
+            penalty_form.setVisible(false);   //-------------------   new ---------------------- //
+
+            statistics_form.setVisible(false);   //-------------------   new ---------------------- //
 
             libraryDisplayData();
-            // libraryStatusList();
-        } else if (event.getSource() == requestBtn) { // New case for library
-            dashboard_form.setVisible(false);
-            addStudent_form.setVisible(false);
-            addTeacher_form.setVisible(false);
-            addCourse_form.setVisible(false);
-            addSubject_form.setVisible(false);
-            payment_form.setVisible(false);
-            salary_form.setVisible(false);
-            library_form.setVisible(false);
-            request_form.setVisible(true);
 
-            handleRequest();
 
         }
 

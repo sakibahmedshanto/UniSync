@@ -2193,6 +2193,143 @@ public class AdminMainFormController implements Initializable {
         ListData.temp_studentStatus = null;
     }
 
+    public ObservableList<BookData> libraryGetData() {
+        ObservableList<BookData> listData = FXCollections.observableArrayList();
+        String selectData = "SELECT book_id, title, author, category, isbn, quantity, status, date_insert FROM books WHERE date_delete IS NULL";
+
+
+        try (Connection connect = Database.connectDB();
+             PreparedStatement prepare = connect.prepareStatement(selectData);
+             ResultSet result = prepare.executeQuery()) {
+
+            while (result.next()) {
+                BookData bData = new BookData(
+                        result.getInt("book_id"),
+                        result.getString("title"),
+                        result.getString("author"),
+                        result.getString("category"),
+                        result.getString("isbn"),
+                        result.getInt("quantity"),
+                        result.getString("status"),
+                        result.getDate("date_insert"),
+                        null,  // Assuming dateUpdated is not fetched here
+                        null
+                );
+                listData.add(bData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listData;
+    }
+
+
+
+    private ObservableList<BookData> libraryListData;
+    //new
+    public void libraryDisplayData() {
+        libraryListData = libraryGetData();
+
+
+        library_col_isbn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+
+        library_col_title.setCellValueFactory(new PropertyValueFactory<>("title"));
+        library_col_author.setCellValueFactory(new PropertyValueFactory<>("author"));
+        library_col_category.setCellValueFactory(new PropertyValueFactory<>("category"));
+
+        library_col_quantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        library_col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+        library_col_dateInsert.setCellValueFactory(new PropertyValueFactory<>("dateAdded")); // Binding the dateAdded column
+
+        library_tableView.setItems(libraryListData);
+    }
+
+
+    public void libraryAddBtn() {
+        clearTempBookData();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("addLibrary.fxml"));
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Add Book");
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void libraryUpdateBtn() {
+
+        BookData bData = library_tableView.getSelectionModel().getSelectedItem();
+        int num = library_tableView.getSelectionModel().getSelectedIndex();
+        if ((num - 1) < -1) {
+            alert.errorMessage("Please select the item first");
+            return;
+        } else {
+            ListData.temp_bookID = bData.getBookID();
+            ListData.temp_title = bData.getTitle();
+            ListData.temp_author = bData.getAuthor();
+            ListData.temp_category = bData.getCategory();
+            ListData.temp_isbn = bData.getIsbn();
+            ListData.temp_quantity = bData.getQuantity();
+            ListData.temp_status = bData.getStatus();
+
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("AddLibrary.fxml"));
+                Stage stage = new Stage();
+
+                stage.setTitle("Update Book");
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void libraryDeleteBtn() {
+        BookData bData = library_tableView.getSelectionModel().getSelectedItem();
+        int num = library_tableView.getSelectionModel().getSelectedIndex();
+
+        if ((num - 1) < -1) {
+            alert.errorMessage("Please select item first");
+            return;
+        } else {
+            if (alert.confirmMessage("Are you sure you want to delete Book ID: " + bData.getBookID() + "?")) {
+
+                String deleteData = "UPDATE books SET date_delete = NOW() WHERE book_id = ?";
+                connect = Database.connectDB();
+
+                try {
+                    prepare = connect.prepareStatement(deleteData);
+                    prepare.setInt(1, bData.getBookID());
+
+                    prepare.executeUpdate();
+                    alert.successMessage("Book marked as deleted!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                alert.errorMessage("Cancelled.");
+            }
+        }
+        libraryDisplayData();
+    }
+
+
+    private void clearTempBookData() {
+        ListData.temp_bookID = null;
+        ListData.temp_title = null;
+        ListData.temp_author = null;
+        ListData.temp_isbn = null;
+        ListData.temp_category = null;
+        ListData.temp_quantity = null;
+        ListData.temp_status = null;
+    }
+
 
 
 

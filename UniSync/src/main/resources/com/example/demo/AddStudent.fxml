@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="622.0" prefWidth="591.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.UniSync.AddStudentController">
+<AnchorPane id="AnchorPane" prefHeight="622.0" prefWidth="591.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.AddStudentController">
     <children>
         <AnchorPane fx:id="main_form" layoutX="18.4" layoutY="14.0" prefHeight="596.0" prefWidth="559.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
             <children>
@@ -38,7 +38,7 @@
                         <ComboBox fx:id="student_year" layoutX="150.0" layoutY="200.0" prefWidth="150.0" promptText="Choose..." />
                         <Label layoutX="92.0" layoutY="241.0" text="Program:" />
                         <ComboBox fx:id="student_course" layoutX="149.0" layoutY="237.0" onAction="#courseList" prefWidth="150.0" promptText="Choose..." />
-                        <Label layoutX="93.0" layoutY="276.0" text="Course:" />
+                        <Label layoutX="93.0" layoutY="276.0" text="Section:" />
                         <Label layoutX="104.0" layoutY="315.0" text="Gender:" />
                         <ComboBox fx:id="student_gender" layoutX="151.0" layoutY="311.0" prefWidth="150.0" promptText="Choose..." />
                         <ComboBox fx:id="student_section" layoutX="150.0" layoutY="272.0" prefWidth="150.0" promptText="Choose..." />

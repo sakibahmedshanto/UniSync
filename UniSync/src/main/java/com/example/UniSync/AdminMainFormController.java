@@ -2329,6 +2329,31 @@ public class AdminMainFormController implements Initializable {
         ListData.temp_quantity = null;
         ListData.temp_status = null;
     }
+    @FXML
+    private AnchorPane library_menu_form, statistics_form;
+    @FXML
+    private AnchorPane penalty_form;
+    public void showLibraryForm(ActionEvent event) {
+        library_menu_form.setVisible(false);
+        library_form.setVisible(true);
+        request_form.setVisible(false);
+        statistics_form.setVisible(false);
+        penalty_form.setVisible(false);
+    }
+    //-------------------   new ---------------------- //
+    public void showRequestsForm(ActionEvent event) {
+        library_menu_form.setVisible(false);
+        request_form.setVisible(true);
+        penalty_form.setVisible(false);
+        handleRequest();
+    }
+    //-------------------   new ---------------------- //
+    public void showStatisticsForm(ActionEvent event) {
+        library_menu_form.setVisible(false);
+        statistics_form.setVisible(true);
+        penalty_form.setVisible(false);
+        displayBookStats();
+    }
 
 
 

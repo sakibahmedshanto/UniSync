@@ -202,6 +202,22 @@
                                                 </AnchorPane>
                                             </children>
                                         </AnchorPane>
+                                        <AnchorPane fx:id="library_menu_form" layoutX="10.0" layoutY="10.0" prefHeight="573.0" prefWidth="891.0"
+                                                    AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" stylesheets="@../Design/MainForm.css">
+
+                                            <children>
+                                                <Button fx:id="manageLibraryBtn" text="Manage Library" onAction="#showLibraryForm"
+                                                        layoutX="345" layoutY="150" prefWidth="200" prefHeight="50"  styleClass="btn"/>
+
+                                                <Button fx:id="manageRequestsBtn" text="Manage Requests" onAction="#showRequestsForm"
+                                                        layoutX="345" layoutY="220" prefWidth="200" prefHeight="50" styleClass="btn"/>
+
+                                                <Button fx:id="viewStatisticsBtn" text="View Statistics" onAction="#showStatisticsForm"
+                                                        layoutX="345" layoutY="290" prefWidth="200" prefHeight="50" styleClass="btn"/>
+                                                <Button fx:id="returnsNpenalties" text="Returns and Penalties" onAction="#showPenaltyForm"
+                                                        layoutX="345" layoutY="350" prefWidth="200" prefHeight="50" styleClass="btn"/>
+                                            </children>
+                                        </AnchorPane>
                                         <AnchorPane fx:id="addSubject_form" layoutX="3.0" layoutY="3.0" prefHeight="566.0" prefWidth="884.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <children>
                                                 <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="532.0" prefWidth="320.0" stylesheets="@../Design/MainForm.css" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">

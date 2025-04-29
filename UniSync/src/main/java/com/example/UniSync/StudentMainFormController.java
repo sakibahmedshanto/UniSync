@@ -949,7 +949,6 @@ public class StudentMainFormController implements Initializable {
         }
     }
 
-
     public void showAddTaskForm(ActionEvent actionEvent) {
     }
 
@@ -1031,10 +1030,10 @@ public class StudentMainFormController implements Initializable {
     private AnchorPane status_form;
 
     public void switchForm2(ActionEvent actionEvent) {
-        // First ensure tracker form is visible
+
         tracker_form.setVisible(true);
 
-        // Then handle the task forms
+
         if (actionEvent.getSource() == showAddTaskFormBtn) {
             addTask_form.setVisible(true);
             taskList_form.setVisible(false);
@@ -1052,7 +1051,7 @@ public class StudentMainFormController implements Initializable {
             taskList_form.setVisible(false);
             addTask_form.setVisible(false);
             status_form.setVisible(true);
-            //  loadStudentTasks(); // Refresh task list when showing
+
             Map<String, Integer> summary = getTaskSummaryByStatus();
             taskCompletedLabel.setText("Completed: " + summary.getOrDefault("Completed", 0));
             taskPendingLabel.setText("Pending: " + summary.getOrDefault("Pending", 0));
@@ -1060,7 +1059,7 @@ public class StudentMainFormController implements Initializable {
 
 
 
-        // Hide other main forms
+
         library_form.setVisible(false);
         teacher_form1.setVisible(false);
         teacher_form2.setVisible(false);
@@ -1117,41 +1116,7 @@ public class StudentMainFormController implements Initializable {
         }
     }
 
-    /*class TaskData {
-        private final SimpleStringProperty title;
-        private final SimpleStringProperty description;
-        private final SimpleStringProperty priority;
-        private final SimpleStringProperty dueDate;
-        private final SimpleStringProperty status;
 
-        public TaskData(String title, String description, String priority, String dueDate, String status) {
-            this.title = new SimpleStringProperty(title);
-            this.description = new SimpleStringProperty(description);
-            this.priority = new SimpleStringProperty(priority);
-            this.dueDate = new SimpleStringProperty(dueDate);
-            this.status = new SimpleStringProperty(status);
-        }
-
-        public String getTitle() {
-            return title.get();
-        }
-
-        public String getDescription() {
-            return description.get();
-        }
-
-        public String getPriority() {
-            return priority.get();
-        }
-
-        public String getDueDate() {
-            return dueDate.get();
-        }
-
-        public String getStatus() {
-            return status.get();
-        }
-    }*/
 
     public static class TaskData {
         private final SimpleStringProperty title;
@@ -1215,42 +1180,6 @@ public class StudentMainFormController implements Initializable {
 
     @FXML
     private AnchorPane viewTasks_form;
-
-    /*public void addTaskAction(ActionEvent event) {
-        String title = taskTitleField.getText();
-        String description = taskDescriptionField.getText();
-        String priority = priorityComboBox.getSelectionModel().getSelectedItem();
-        LocalDate dueDate = dueDatePicker.getValue();
-
-        if (title.isEmpty() || description.isEmpty() || priority == null || dueDate == null) {
-            alert.errorMessage("Please fill all fields.");
-            return;
-        }
-
-        String insertSQL = "INSERT INTO student_todo (student_id, task_title, task_description, priority, due_date, status) VALUES (?, ?, ?, ?, ?, 'Pending')";
-
-        try (Connection conn = Database.connectDB();
-             PreparedStatement stmt = conn.prepareStatement(insertSQL)) {
-
-            stmt.setString(1, student_id.getText());
-            stmt.setString(2, title);
-            stmt.setString(3, description);
-            stmt.setString(4, priority);
-            stmt.setDate(5, Date.valueOf(dueDate));
-
-            int result = stmt.executeUpdate();
-            if (result > 0) {
-                alert.successMessage("Task added successfully!");
-                clearTaskFields();
-                loadStudentTasks();
-            } else {
-                alert.errorMessage("Failed to add task.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            alert.errorMessage("Database error.");
-        }
-    }*/
 
     public void addTaskAction(ActionEvent event) {
         String title = taskTitleField.getText();
@@ -1325,15 +1254,6 @@ public class StudentMainFormController implements Initializable {
     @FXML
     private Label labelTotalPending;
 
-    /*private void updateTaskSummary() {
-        Map<String, Integer> summary = getTaskStatusSummary(student_id.getText());
-
-        int completed = summary.getOrDefault("Completed", 0);
-        int pending = summary.getOrDefault("Pending", 0);
-
-        labelTotalCompleted.setText("Completed: " + completed);
-        labelTotalPending.setText("Pending: " + pending);
-    }*/
     @FXML
     private TextField searchTaskField;
 
@@ -1412,9 +1332,9 @@ public class StudentMainFormController implements Initializable {
             }
 
             bookrequestTableView.setItems(approvedList);
-            returnBookBtn.setVisible(true);   //  show this
+            returnBookBtn.setVisible(true);
             showApprovedBtn.setVisible(false);
-            returnAllBtn.setVisible(true);//  hide this
+            returnAllBtn.setVisible(true);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1541,6 +1461,16 @@ public class StudentMainFormController implements Initializable {
             alert.errorMessage("Error during batch return.");
         }
     }
+
+
+
+
+
+
+
+
+
+
 
 
 

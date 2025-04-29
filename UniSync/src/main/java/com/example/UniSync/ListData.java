@@ -56,6 +56,7 @@ public class ListData {
     public static String temp_studentPaymentStatus;
     public static String temp_studentStatus;
     public static String loggedInTeacherID;
+
     public static Integer temp_bookID;
 
     public static Integer temp_reqID;
@@ -66,6 +67,8 @@ public class ListData {
     public static Integer temp_quantity;
     public static String temp_status;
 
+    public static String temp_autoreq;
+
     public static String temp_reqDate;
 
     public static String temp_dueDate;
@@ -73,5 +76,6 @@ public class ListData {
     public static String temp_returnDate;
 
     public static String temp_if_rejected;
+
 
 }

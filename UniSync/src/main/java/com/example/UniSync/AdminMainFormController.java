@@ -2533,6 +2533,55 @@ public class AdminMainFormController implements Initializable {
         }
 
     }
+    //-------------------   new ---------------------- //
+    @FXML
+    private TableView<BookData> bookStatsTable;
+
+    @FXML
+    private TableColumn<BookData, String> bookStats_col_category;
+
+    @FXML
+    private TableColumn<BookData, String> bookStats_col_status;
+
+    @FXML
+    private TableColumn<BookData, Integer> bookStats_col_total;
+
+
+    public ObservableList<BookData> getBookStats() { //pd
+        ObservableList<BookData> bookStatsList = FXCollections.observableArrayList();
+        String query = "SELECT category, status, COUNT(*) AS total_books " +
+                "FROM books " +
+                "WHERE date_delete IS NULL " +  // Only non-deleted books
+                "GROUP BY category, status WITH ROLLUP";
+
+        try (Connection connect = Database.connectDB();
+             PreparedStatement prepare = connect.prepareStatement(query);
+             ResultSet result = prepare.executeQuery()) {
+
+            while (result.next()) {
+                BookData statsData = new BookData(
+                        result.getString("category"),
+                        result.getString("status"),
+                        result.getInt("total_books")
+                );
+                bookStatsList.add(statsData);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookStatsList;
+    }
+
+    public void displayBookStats() {
+        ObservableList<BookData> statsData = getBookStats();
+
+        bookStats_col_category.setCellValueFactory(new PropertyValueFactory<>("category"));
+        bookStats_col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+        bookStats_col_total.setCellValueFactory(new PropertyValueFactory<>("quantity")); // Reusing quantity for total_books
+
+        bookStatsTable.setItems(statsData);
+    }
+
 
 
 

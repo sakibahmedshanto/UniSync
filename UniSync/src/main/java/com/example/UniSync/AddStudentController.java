@@ -158,6 +158,58 @@ public class AddStudentController implements Initializable {
     }
 
    //--
+   public void updateBtn() {
+       if (student_name.getText().isEmpty()
+               || student_year.getSelectionModel().getSelectedItem() == null
+               || student_course.getSelectionModel().getSelectedItem() == null
+               || student_section.getSelectionModel().getSelectedItem() == null
+               || student_pay.getText().isEmpty()
+               || student_payment.getSelectionModel().getSelectedItem() == null
+               || student_status.getSelectionModel().getSelectedItem() == null
+               || ListData.path == null || ListData.path.isEmpty()
+               || student_birthDate.getValue() == null
+               || student_semester.getSelectionModel().getSelectedItem() == null
+               || student_gender.getSelectionModel().getSelectedItem() == null) {
+           alert.errorMessage("Please fill all blank fields.");
+           return;
+       }
+
+       try {
+           connect = Database.connectDB();
+           String callProcedure = "{CALL UpdateStudent90(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"; //procedures
+           CallableStatement callableStatement = connect.prepareCall(callProcedure);
+
+           double payAmount = Double.parseDouble(student_pay.getText().replace("$", "").trim());
+           callableStatement.setString(1, student_number.getText());
+           callableStatement.setString(2, student_name.getText());
+           callableStatement.setString(3, student_gender.getSelectionModel().getSelectedItem());
+           callableStatement.setDate(4, java.sql.Date.valueOf(student_birthDate.getValue()));
+           callableStatement.setString(5, student_year.getSelectionModel().getSelectedItem());
+           callableStatement.setInt(6, countAge()); // Ensure accurate age calculation
+           callableStatement.setString(7, student_course.getSelectionModel().getSelectedItem());
+           callableStatement.setString(8, student_section.getSelectionModel().getSelectedItem());
+           callableStatement.setString(9, student_semester.getSelectionModel().getSelectedItem());
+           callableStatement.setDouble(10, payAmount);
+           callableStatement.setString(11, student_payment.getSelectionModel().getSelectedItem());
+           callableStatement.setString(12, ListData.path);
+           callableStatement.setString(13, student_status.getSelectionModel().getSelectedItem());
+
+           // printing OUT parameter for rows affected
+           callableStatement.registerOutParameter(14, java.sql.Types.INTEGER);
+
+           callableStatement.executeUpdate();
+           int rowsAffected = callableStatement.getInt(14);
+           System.out.println("Rows affected: " + rowsAffected);
+
+           alert.successMessage("Student updated successfully!");
+           clearFields();
+       } catch (Exception e) {
+           e.printStackTrace();
+           alert.errorMessage("Error updating student: " + e.getMessage());
+       }
+   }
+
+
     public void clearFields() {
 
 

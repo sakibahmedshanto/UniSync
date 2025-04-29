@@ -289,10 +289,10 @@
                                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                                             </columnResizePolicy>
                                                         </TableView>
-                                                        <TextField fx:id="searchField1" layoutX="14.0" layoutY="687.0" prefHeight="26.0" prefWidth="400.0" promptText="Search by title, author, etc..." />
-                                                        <Button fx:id="searchBtn1" layoutX="427.0" layoutY="682.0" onAction="#handleSearch" prefHeight="36.0" prefWidth="99.0" styleClass="btn" text="Search" />
-                                                        <Button fx:id="addbook_deleteBtn11" layoutX="1186.0" layoutY="682.0" mnemonicParsing="false" onAction="#libraryDeleteBtn" prefHeight="36.0" prefWidth="99.0" styleClass="btn" stylesheets="@../Design/MainForm.css" text="Delete" AnchorPane.bottomAnchor="19.600000000000023" AnchorPane.rightAnchor="14.799999999999955" />
-                                                        <Button fx:id="managing_books" layoutX="1039.0" layoutY="682.0" mnemonicParsing="false" onAction="#manageBtn" prefHeight="36.0" prefWidth="142.0" styleClass="btn" stylesheets="@../Design/MainForm.css" text="Manage Requests" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="130.0" />
+                                                        <TextField fx:id="searchField11" layoutX="14.0" layoutY="687.0" prefHeight="26.0" prefWidth="400.0" promptText="Search by title, author, etc..." />
+                                                        <Button fx:id="searchBtn11" layoutX="427.0" layoutY="682.0" onAction="#handleSearch" prefHeight="36.0" prefWidth="99.0" styleClass="btn" text="Search" />
+                                                        <Button fx:id="addbook_deleteBtn111" layoutX="1186.0" layoutY="682.0" mnemonicParsing="false" onAction="#libraryDeleteBtn" prefHeight="36.0" prefWidth="99.0" styleClass="btn" stylesheets="@../Design/MainForm.css" text="Delete" AnchorPane.bottomAnchor="19.600000000000023" AnchorPane.rightAnchor="14.799999999999955" />
+                                                        <Button fx:id="managing_books1" layoutX="1039.0" layoutY="682.0" mnemonicParsing="false" onAction="#manageBtn" prefHeight="36.0" prefWidth="142.0" styleClass="btn" stylesheets="@../Design/MainForm.css" text="Manage Requests" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="130.0" />
                                                     </children>
                                                 </AnchorPane>
                                             </children>

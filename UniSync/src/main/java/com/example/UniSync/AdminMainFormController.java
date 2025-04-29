@@ -2582,6 +2582,89 @@ public class AdminMainFormController implements Initializable {
         bookStatsTable.setItems(statsData);
     }
 
+    @FXML
+    private TableView<bookrequestData>penalty_tableView1;
+
+
+    public void loadReturnedBooksWithFines() {
+        // STEP 1: Update fines in DB
+        updateFinesInDatabase();
+
+        // STEP 2: Then load from DB
+        ObservableList<bookrequestData> penaltyList = FXCollections.observableArrayList();
+
+        String sql = "SELECT request_id, student_id, isbn, due_date, return_date, fine_amount " +
+                "FROM book_requests WHERE return_date IS NOT NULL";
+
+        try (Connection conn = Database.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                penaltyList.add(new bookrequestData(
+                        rs.getInt("request_id"),
+                        rs.getString("student_id"),
+                        rs.getString("isbn"),
+                        rs.getDate("due_date"),
+                        rs.getDate("return_date"),
+                        rs.getDouble("fine_amount")
+                ));
+            }
+
+            penalty_tableView1.setItems(penaltyList);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML private TableColumn<bookrequestData, Integer> requ_id;
+    @FXML private TableColumn<bookrequestData, String> stuu_id;
+    @FXML private TableColumn<bookrequestData, String> bookk_isbn;
+    @FXML private TableColumn<bookrequestData, Date> due_date_col;
+    @FXML private TableColumn<bookrequestData, Date> return_date_col;
+    @FXML private TableColumn<bookrequestData, Double> fine_col;
+
+    public void setupPenaltyTableColumns() {
+        requ_id.setCellValueFactory(new PropertyValueFactory<>("requestId"));
+        stuu_id.setCellValueFactory(new PropertyValueFactory<>("studentId"));
+        bookk_isbn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        due_date_col.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+        return_date_col.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
+        fine_col.setCellValueFactory(new PropertyValueFactory<>("fineAmount"));
+    }
+
+
+    public void showPenaltyForm(ActionEvent actionEvent) {
+
+        library_menu_form.setVisible(false);
+        library_form.setVisible(false);
+        request_form.setVisible(false);
+        statistics_form.setVisible(false);
+        penalty_form.setVisible(true);
+    }
+
+    public void updateFinesInDatabase() {
+        String sql = "UPDATE book_requests " +
+                "SET fine_amount = CASE " +
+                "WHEN return_date IS NOT NULL AND return_date > due_date " +
+                "THEN DATEDIFF(return_date, due_date) * 10 " +
+                "ELSE 0 " +
+                "END " +
+                "WHERE return_date IS NOT NULL";
+
+        try (Connection conn = Database.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            int updatedRows = stmt.executeUpdate();
+            System.out.println("✅ Updated fines for " + updatedRows + " returned books.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 

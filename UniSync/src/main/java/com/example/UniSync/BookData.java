@@ -69,6 +69,12 @@ public class BookData {
         this.dateUpdated = dateUpdated;
     }
 
+    public BookData(String category, String status, int totalBooks) {
+        this.category = (category == null) ? "Total" : category;
+        this.status = (status == null) ? "Subtotal" : status;
+        this.quantity = totalBooks;
+    }
+
 
     public Integer getBookID() {
         return bookId;

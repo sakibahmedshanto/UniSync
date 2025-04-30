@@ -1821,6 +1821,7 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
 
 
             dashboardDisplayTS();
@@ -1841,6 +1842,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
 
             addTeacherDisplayData();
@@ -1860,6 +1863,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
 
             addCourseDisplayData();
@@ -1874,6 +1879,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
             addSubjectDisplayData();
             addSubjectCourseList();
@@ -1888,6 +1895,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
 
             paymentDisplayData();
@@ -1903,6 +1912,8 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(true);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
+
 
             salaryDisplayData();
             salaryDisableFields();
@@ -1918,6 +1929,7 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(false);
             request_form.setVisible(false);
+            library_menu_form.setVisible(false); //new
 
             addStudentDisplayData();
         }  else if (event.getSource() == library_btn) {
@@ -1930,21 +1942,15 @@ public class AdminMainFormController implements Initializable {
             salary_form.setVisible(false);
             library_form.setVisible(true);
             request_form.setVisible(false);
+            library_menu_form.setVisible(true);//new
+            request_form.setVisible(false); //new
+            library_form.setVisible(false); //new
+            penalty_form.setVisible(false);   //-------------------   new ---------------------- //
+
+            statistics_form.setVisible(false);   //-------------------   new ---------------------- //
 
             libraryDisplayData();
-            // libraryStatusList();
-        } else if (event.getSource() == requestBtn) { // New case for library
-            dashboard_form.setVisible(false);
-            addStudent_form.setVisible(false);
-            addTeacher_form.setVisible(false);
-            addCourse_form.setVisible(false);
-            addSubject_form.setVisible(false);
-            payment_form.setVisible(false);
-            salary_form.setVisible(false);
-            library_form.setVisible(false);
-            request_form.setVisible(true);
 
-            handleRequest();
 
         }
 
@@ -2033,6 +2039,11 @@ public class AdminMainFormController implements Initializable {
         dashboardDSChart();
         dashboardDTChart();
         dashboardDIChart();
+
+        library_menu_form.setVisible(false);
+
+        setupPenaltyTableColumns();
+        loadReturnedBooksWithFines();
     }
 
     private AlertMessage alert = new AlertMessage();
@@ -2193,15 +2204,10 @@ public class AdminMainFormController implements Initializable {
         ListData.temp_studentStatus = null;
     }
 
-
-
-
-
-
-
     public ObservableList<BookData> libraryGetData() {
         ObservableList<BookData> listData = FXCollections.observableArrayList();
-        String selectData = "SELECT book_id, title, author, category, isbn, quantity, status, date_insert FROM books";
+        String selectData = "SELECT book_id, title, author, category, isbn, quantity, status, date_insert FROM books WHERE date_delete IS NULL";
+
 
         try (Connection connect = Database.connectDB();
              PreparedStatement prepare = connect.prepareStatement(selectData);
@@ -2218,7 +2224,7 @@ public class AdminMainFormController implements Initializable {
                         result.getString("status"),
                         result.getDate("date_insert"),
                         null,  // Assuming dateUpdated is not fetched here
-                        null   // Assuming dateDeleted is not fetched here
+                        null
                 );
                 listData.add(bData);
             }
@@ -2229,8 +2235,9 @@ public class AdminMainFormController implements Initializable {
     }
 
 
-    private ObservableList<BookData> libraryListData;
 
+    private ObservableList<BookData> libraryListData;
+    //new
     public void libraryDisplayData() {
         libraryListData = libraryGetData();
 
@@ -2295,7 +2302,6 @@ public class AdminMainFormController implements Initializable {
     }
 
     public void libraryDeleteBtn() {
-
         BookData bData = library_tableView.getSelectionModel().getSelectedItem();
         int num = library_tableView.getSelectionModel().getSelectedIndex();
 
@@ -2303,10 +2309,9 @@ public class AdminMainFormController implements Initializable {
             alert.errorMessage("Please select item first");
             return;
         } else {
-            if (alert.confirmMessage("Are you sure you want to Delete Book ID: "
-                    + bData.getBookID() + "?")) {
+            if (alert.confirmMessage("Are you sure you want to delete Book ID: " + bData.getBookID() + "?")) {
 
-                String deleteData = "DELETE FROM books WHERE book_id = ?";
+                String deleteData = "UPDATE books SET date_delete = NOW() WHERE book_id = ?";
                 connect = Database.connectDB();
 
                 try {
@@ -2314,7 +2319,7 @@ public class AdminMainFormController implements Initializable {
                     prepare.setInt(1, bData.getBookID());
 
                     prepare.executeUpdate();
-                    alert.successMessage("Deleted successfully!");
+                    alert.successMessage("Book marked as deleted!");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -2325,6 +2330,7 @@ public class AdminMainFormController implements Initializable {
         libraryDisplayData();
     }
 
+
     private void clearTempBookData() {
         ListData.temp_bookID = null;
         ListData.temp_title = null;
@@ -2334,7 +2340,32 @@ public class AdminMainFormController implements Initializable {
         ListData.temp_quantity = null;
         ListData.temp_status = null;
     }
-
+    @FXML
+    private AnchorPane library_menu_form, statistics_form;
+    @FXML
+    private AnchorPane penalty_form;
+    public void showLibraryForm(ActionEvent event) {
+        library_menu_form.setVisible(false);
+        library_form.setVisible(true);
+        request_form.setVisible(false);
+        statistics_form.setVisible(false);
+        penalty_form.setVisible(false);
+    }
+    //-------------------   new ---------------------- //
+    public void showRequestsForm(ActionEvent event) {
+        library_menu_form.setVisible(false);
+        request_form.setVisible(true);
+        penalty_form.setVisible(false);
+        handleRequest();
+    }
+    //-------------------   new ---------------------- //
+    public void showStatisticsForm(ActionEvent event) {
+        library_menu_form.setVisible(false);
+        statistics_form.setVisible(true);
+        penalty_form.setVisible(false);
+        displayBookStats();
+    }
+  //
     @FXML
     private TextField searchField;
 
@@ -2342,7 +2373,8 @@ public class AdminMainFormController implements Initializable {
         String searchText = searchField.getText().trim();
 
         // Construct the SQL query
-        String sql = "SELECT * FROM books WHERE isbn LIKE ? OR title LIKE ? OR author LIKE ?";
+        String sql = "SELECT * FROM books WHERE (isbn LIKE ? OR title LIKE ? OR author LIKE ?) AND date_delete IS NULL";
+
 
         try (Connection connect = Database.connectDB();
              PreparedStatement prepare = connect.prepareStatement(sql)) {
@@ -2386,7 +2418,13 @@ public class AdminMainFormController implements Initializable {
 
     private ObservableList<bookrequestData> bookRequestsListData;
 
+    //-------------------   new ---------------------- //  approval_suggested cursor
+    @FXML
+    private TableColumn<bookrequestData, String> approval_suggested;
     public void handleRequest() {
+        runCursorProcedure(); //  Run the cursor first
+
+
         bookRequestsListData = getBookRequestsData();
 
         req_id.setCellValueFactory(new PropertyValueFactory<>("requestId"));
@@ -2395,19 +2433,47 @@ public class AdminMainFormController implements Initializable {
         author_id.setCellValueFactory(new PropertyValueFactory<>("author"));
         book_isbn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
         library_col_quantity1.setCellValueFactory(new PropertyValueFactory<>("status"));
-        req_date.setCellValueFactory(new PropertyValueFactory<>("requestDate")); // Make sure to have a corresponding getter in BookData
-
+        req_date.setCellValueFactory(new PropertyValueFactory<>("requestDate"));
+        approval_suggested.setCellValueFactory(new PropertyValueFactory<>("autoApprovalSuggested"));
         bookreq_tableView1.setItems(bookRequestsListData);
     }
 
-   /* public ObservableList<bookrequestData> getBookRequestsData() {
+
+    //-------------------   new ---------------------- //
+    //cursor used //
+    public void runCursorProcedure() {
+        String procedureCall = "{CALL ProcessBookRequests809()}";
+
+        try (Connection conn = Database.connectDB();
+             CallableStatement stmt = conn.prepareCall(procedureCall)) {
+
+            stmt.execute(); // run the procedure and used cursor to update eligibility
+            System.out.println("Cursor executed: Book request eligibility updated.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //-------------------   new ---------------------- //
+    public ObservableList<bookrequestData> getBookRequestsData() {
         ObservableList<bookrequestData> listData = FXCollections.observableArrayList();
-        String query = "SELECT request_id, student_id, title, author, isbn, request_date, status, due_date FROM book_requests";
+
+        // Modified query: Includes auto_approval_suggested column
+        String query = "SELECT br.request_id, br.student_id, br.title, br.author, br.isbn, br.request_date, " +
+                "br.status, br.due_date, br.auto_approval_suggested " +
+                "FROM book_requests br " +
+                "INNER JOIN books b ON br.isbn = b.isbn " +
+                "WHERE b.date_delete IS NULL";  // Ensures deleted books don’t show
 
         try (Connection conn = Database.connectDB();
              PreparedStatement pstmt = conn.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
+
             while (rs.next()) {
+                String autoApproval = rs.getString("auto_approval_suggested");
+                System.out.println("Request ID: " + rs.getInt("request_id") + " | Auto Approval: " + autoApproval);
+
                 listData.add(new bookrequestData(
                         rs.getInt("request_id"),
                         rs.getString("student_id"),
@@ -2417,14 +2483,19 @@ public class AdminMainFormController implements Initializable {
                         rs.getDate("request_date"),
                         rs.getString("status"),
                         rs.getDate("due_date"),
-                        null
+                        null,
+                        autoApproval
                 ));
             }
         } catch (SQLException e) {
-            e.printStackTrace();  // Print the stack trace to diagnose the exception
+            e.printStackTrace();  // Print error for debugging
         }
-        return listData;  // Return the list containing the data
-    }*/ //i commented out tis on 4 april
+
+        return listData;
+    }
+
+
+
 
     public void manageBtn(ActionEvent actionEvent) {
         bookrequestData bData = bookreq_tableView1.getSelectionModel().getSelectedItem();
@@ -2444,9 +2515,10 @@ public class AdminMainFormController implements Initializable {
         ListData.temp_author = bData.getAuthor();
         ListData.temp_isbn = bData.getIsbn();
         ListData.temp_reqDate = String.valueOf(bData.getRequestDate());
-        ListData.temp_dueDate = String.valueOf(bData.getdueDate());
-        ListData.temp_returnDate = String.valueOf(bData.getreturnDate());
+        ListData.temp_dueDate = String.valueOf(bData.getDueDate());
+        ListData.temp_returnDate = String.valueOf(bData.getReturnDate());
         ListData.temp_status = bData.getStatus();
+        ListData.temp_autoreq = bData.getAutoApprovalSuggested();
 
         try {
 
@@ -2467,6 +2539,142 @@ public class AdminMainFormController implements Initializable {
         }
 
     }
+    //-------------------   new ---------------------- //
+    @FXML
+    private TableView<BookData> bookStatsTable;
+
+    @FXML
+    private TableColumn<BookData, String> bookStats_col_category;
+
+    @FXML
+    private TableColumn<BookData, String> bookStats_col_status;
+
+    @FXML
+    private TableColumn<BookData, Integer> bookStats_col_total;
+
+
+    public ObservableList<BookData> getBookStats() { //pd
+        ObservableList<BookData> bookStatsList = FXCollections.observableArrayList();
+        String query = "SELECT category, status, COUNT(*) AS total_books " +
+                "FROM books " +
+                "WHERE date_delete IS NULL " +  // Only non-deleted books
+                "GROUP BY category, status WITH ROLLUP";
+
+        try (Connection connect = Database.connectDB();
+             PreparedStatement prepare = connect.prepareStatement(query);
+             ResultSet result = prepare.executeQuery()) {
+
+            while (result.next()) {
+                BookData statsData = new BookData(
+                        result.getString("category"),
+                        result.getString("status"),
+                        result.getInt("total_books")
+                );
+                bookStatsList.add(statsData);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookStatsList;
+    }
+
+    public void displayBookStats() {
+        ObservableList<BookData> statsData = getBookStats();
+
+        bookStats_col_category.setCellValueFactory(new PropertyValueFactory<>("category"));
+        bookStats_col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+        bookStats_col_total.setCellValueFactory(new PropertyValueFactory<>("quantity")); // Reusing quantity for total_books
+
+        bookStatsTable.setItems(statsData);
+    }
+
+    @FXML
+    private TableView<bookrequestData>penalty_tableView1;
+
+
+    public void loadReturnedBooksWithFines() {
+        // STEP 1: Update fines in DB
+        updateFinesInDatabase();
+
+        // STEP 2: Then load from DB
+        ObservableList<bookrequestData> penaltyList = FXCollections.observableArrayList();
+
+        String sql = "SELECT request_id, student_id, isbn, due_date, return_date, fine_amount " +
+                "FROM book_requests WHERE return_date IS NOT NULL";
+
+        try (Connection conn = Database.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                penaltyList.add(new bookrequestData(
+                        rs.getInt("request_id"),
+                        rs.getString("student_id"),
+                        rs.getString("isbn"),
+                        rs.getDate("due_date"),
+                        rs.getDate("return_date"),
+                        rs.getDouble("fine_amount")
+                ));
+            }
+
+            penalty_tableView1.setItems(penaltyList);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML private TableColumn<bookrequestData, Integer> requ_id;
+    @FXML private TableColumn<bookrequestData, String> stuu_id;
+    @FXML private TableColumn<bookrequestData, String> bookk_isbn;
+    @FXML private TableColumn<bookrequestData, Date> due_date_col;
+    @FXML private TableColumn<bookrequestData, Date> return_date_col;
+    @FXML private TableColumn<bookrequestData, Double> fine_col;
+
+    public void setupPenaltyTableColumns() {
+        requ_id.setCellValueFactory(new PropertyValueFactory<>("requestId"));
+        stuu_id.setCellValueFactory(new PropertyValueFactory<>("studentId"));
+        bookk_isbn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        due_date_col.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+        return_date_col.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
+        fine_col.setCellValueFactory(new PropertyValueFactory<>("fineAmount"));
+    }
+
+
+    public void showPenaltyForm(ActionEvent actionEvent) {
+
+        library_menu_form.setVisible(false);
+        library_form.setVisible(false);
+        request_form.setVisible(false);
+        statistics_form.setVisible(false);
+        penalty_form.setVisible(true);
+    }
+
+    public void updateFinesInDatabase() {
+        String sql = "UPDATE book_requests " +
+                "SET fine_amount = CASE " +
+                "WHEN return_date IS NOT NULL AND return_date > due_date " +
+                "THEN DATEDIFF(return_date, due_date) * 10 " +
+                "ELSE 0 " +
+                "END " +
+                "WHERE return_date IS NOT NULL";
+
+        try (Connection conn = Database.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            int updatedRows = stmt.executeUpdate();
+            System.out.println("✅ Updated fines for " + updatedRows + " returned books.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
 
 
 

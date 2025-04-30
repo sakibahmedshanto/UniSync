@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="622.0" prefWidth="591.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.AddStudentController">
+<AnchorPane id="AnchorPane" prefHeight="622.0" prefWidth="591.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.UniSync.AddStudentController">
     <children>
         <AnchorPane fx:id="main_form" layoutX="18.4" layoutY="14.0" prefHeight="596.0" prefWidth="559.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
             <children>
